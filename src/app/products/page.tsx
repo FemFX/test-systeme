@@ -1,7 +1,8 @@
 import Table from "@/components/ui/table";
-import React from "react";
+import { generateColumnsFromData } from "@/lib/utils";
+import { Product } from "@/types/products";
 
-const data = [
+export const products: Product[] = [
   {
     id: 14381328,
 
@@ -165,8 +166,8 @@ const data = [
 
 const ProductsPage = () => {
   return (
-    <div>
-      <Table data={data} columns={Object.keys(data[0])} />
+    <div className="px-4">
+      <Table data={products} columns={generateColumnsFromData(products)} />
     </div>
   );
 };

@@ -1,55 +1,86 @@
 "use client";
-import { renderTableCell } from "@/components/render-table-ceil";
-import { useState } from "react";
 
-const Table = ({ data, columns }: any) => {
-  console.log(columns);
+import React, { FC, useEffect, useState } from "react";
+import { renderTableCell } from "@/components/ui/render-table-ceil";
+import { TableProps } from "@/types/table";
+import Filter from "../filter";
+import { Button } from "./button";
+import { useModal } from "@/hooks/use-modal-store";
 
+const Table: FC<TableProps> = ({ data, columns }) => {
+  const { onOpen } = useModal();
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filter, setFilter] = useState<boolean | null>(null);
 
-  const filteredData = data.filter((item) =>
-    Object.values(item).some(
+  const filteredData = data.filter((item) => {
+    const matchesSearchTerm = Object.values(item).some(
       (value) =>
         typeof value === "string" &&
         value.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+    );
+    console.log(filter);
+
+    if (filter == null) {
+      return matchesSearchTerm;
+    }
+    return matchesSearchTerm && item.active === filter;
+  });
 
   return (
-    <table>
-      <thead>
-        <tr>
-          {columns.map((column, columnIndex) => (
-            <th className="border" key={columnIndex}>
-              {column}
-              <tr>
-                <th className="border">12</th>
-                <th className="border">12</th>
-              </tr>
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((row, rowIndex) => (
-          <tr key={rowIndex}>
-            {columns.map((column, colIndex) => (
-              <td key={`${rowIndex}-${colIndex}`}>
-                {/* Проверяем, является ли свойство вложенным объектом */}
-                {typeof row[column] === "object"
-                  ? Object.entries(row[column]).map(([key, value]) => (
-                      <div key={key}>
-                        <strong>{key}: </strong>
-                        {value}
-                      </div>
-                    ))
-                  : row[column]}
-              </td>
+    <>
+      <Filter setFilter={setFilter} setSearchTerms={setSearchTerm} />
+      <table className="border w-full rounded mt-3">
+        <thead className="border">
+          <tr className="border">
+            {columns.map((column, columnIndex) => (
+              <th
+                className="border"
+                key={columnIndex}
+                colSpan={column.subcolumns ? column.subcolumns.length : 1}
+              >
+                {column.title}
+              </th>
+            ))}
+            <th>Actions</th>
+          </tr>
+
+          <tr>
+            {columns.map((column, columnIndex) => (
+              <React.Fragment key={columnIndex}>
+                {column.subcolumns ? (
+                  column.subcolumns.map((subcolumn, subcolumnIndex) => (
+                    <th
+                      className="border"
+                      key={`${columnIndex}-${subcolumnIndex}`}
+                    >
+                      {subcolumn}
+                    </th>
+                  ))
+                ) : (
+                  <th key={`${columnIndex}-empty`}></th>
+                )}
+              </React.Fragment>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {filteredData.map((item, rowIndex) => (
+            <tr key={rowIndex}>
+              {columns.map((column, colIndex) => (
+                <React.Fragment key={colIndex}>
+                  {renderTableCell(item, column)}
+                </React.Fragment>
+              ))}
+              <th>
+                <Button onClick={() => onOpen("edit", { item, items: data })}>
+                  Edit
+                </Button>
+              </th>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 };
 export default Table;

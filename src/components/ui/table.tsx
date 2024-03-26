@@ -12,8 +12,9 @@ const Table: FC<TableProps> = ({ data, columns }) => {
   const { onOpen } = useModal();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filter, setFilter] = useState<boolean | null>(null);
+  const [items, setItems] = useState<DataItem[]>(data);
 
-  const filteredData = data.filter((item) => {
+  const filteredData = items.filter((item) => {
     const matchesSearchTerm = Object.values(item).some(
       (value) =>
         typeof value === "string" &&
@@ -26,19 +27,17 @@ const Table: FC<TableProps> = ({ data, columns }) => {
     return matchesSearchTerm && item.active === filter;
   });
 
-  const handleUpdate = ({
-    value,
-    key,
-    id,
-  }: {
+  const handleUpdate = <K extends keyof DataItem>(args: {
     id: number;
-    key: string;
+    key: K;
     value: string;
   }) => {
-    const idx = data.findIndex((item) => item.id === id);
-    if (idx !== -1) {
-      data[idx][key] = value;
-    }
+    const { id, key, value } = args;
+    setItems((prevItems) => {
+      return prevItems.map((item) =>
+        item.id === id ? { ...item, [key]: value } : item
+      );
+    });
   };
 
   return (

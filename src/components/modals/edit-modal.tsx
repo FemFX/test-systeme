@@ -21,7 +21,7 @@ const EditModal = () => {
   const handleSave = () => {
     data.handleUpdate({
       id: data.id,
-      value,
+      value: value,
       key: Object.keys(data.value!)[0] as keyof DataItem,
     });
     closeRef.current?.click();

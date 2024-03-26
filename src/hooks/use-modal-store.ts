@@ -7,14 +7,14 @@ type ModalData = {
   id: number;
   value: Record<string, string>;
   item: DataItem;
-  handleUpdate: ({
+  handleUpdate: <K extends keyof DataItem>({
     id,
     value,
     key,
   }: {
     id: number;
     value: string;
-    key: string;
+    key: K;
   }) => void;
 };
 

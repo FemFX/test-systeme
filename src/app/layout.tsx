@@ -19,9 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <ModalProvider />
         <Navbar />
         <main className="mt-10">{children}</main>
-        <ModalProvider />
       </body>
     </html>
   );

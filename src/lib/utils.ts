@@ -1,6 +1,6 @@
-import { Column, DataItem } from "@/types/table";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { Column, DataItem } from "@/types/table";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,3 +23,12 @@ export const generateColumnsFromData = (data: DataItem[]): Column[] => {
 
   return columns;
 };
+export function extractStringField(item: DataItem): { [key: string]: string } {
+  const stringFields: { [key: string]: string } = {};
+  Object.entries(item)
+    .filter(([key, value]) => typeof value === "string" && !key.includes("At"))
+    .forEach(([key, value]) => {
+      stringFields[key] = value;
+    });
+  return stringFields;
+}

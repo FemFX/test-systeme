@@ -2,10 +2,14 @@
 
 import React, { FC, useEffect, useState } from "react";
 import { renderTableCell } from "@/components/ui/render-table-ceil";
-import { TableProps } from "@/types/table";
+import { DataItem, TableProps } from "@/types/table";
 import Filter from "../filter";
 import { Button } from "./button";
 import { useModal } from "@/hooks/use-modal-store";
+import { extractStringField } from "@/lib/utils";
+import { Product } from "@/types/products";
+import { PricePlan } from "@/types/price-plans";
+import { Page } from "@/types/pages";
 
 const Table: FC<TableProps> = ({ data, columns }) => {
   const { onOpen } = useModal();
@@ -18,13 +22,27 @@ const Table: FC<TableProps> = ({ data, columns }) => {
         typeof value === "string" &&
         value.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    console.log(filter);
 
     if (filter == null) {
       return matchesSearchTerm;
     }
     return matchesSearchTerm && item.active === filter;
   });
+
+  const handleUpdate = ({
+    value,
+    key,
+    id,
+  }: {
+    id: number;
+    key: string;
+    value: string;
+  }) => {
+    const idx = data.findIndex((item) => item.id === id);
+    if (idx !== -1) {
+      data[idx][key] = value;
+    }
+  };
 
   return (
     <>
@@ -72,7 +90,16 @@ const Table: FC<TableProps> = ({ data, columns }) => {
                 </React.Fragment>
               ))}
               <th>
-                <Button onClick={() => onOpen("edit", { item, items: data })}>
+                <Button
+                  onClick={() =>
+                    onOpen("edit", {
+                      item,
+                      id: item.id,
+                      value: extractStringField(item),
+                      handleUpdate,
+                    })
+                  }
+                >
                   Edit
                 </Button>
               </th>

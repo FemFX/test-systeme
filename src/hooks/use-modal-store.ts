@@ -4,8 +4,18 @@ import { create } from "zustand";
 export type ModalType = "edit";
 
 type ModalData = {
+  id: number;
+  value: Record<string, string>;
   item: DataItem;
-  items: DataItem[];
+  handleUpdate: ({
+    id,
+    value,
+    key,
+  }: {
+    id: number;
+    value: string;
+    key: string;
+  }) => void;
 };
 
 interface ModalStore {

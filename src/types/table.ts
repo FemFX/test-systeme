@@ -10,6 +10,6 @@ export interface Column {
 export type DataItem = Product | PricePlan | Page;
 
 export interface TableProps {
-  data: DataItem[];
+  data: Product[] | PricePlan[] | Page[];
   columns: Column[];
 }

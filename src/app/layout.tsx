@@ -21,7 +21,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ModalProvider />
         <Navbar />
-        <main className="mt-10">{children}</main>
+        <main className="mt-16 px-4">{children}</main>
       </body>
     </html>
   );

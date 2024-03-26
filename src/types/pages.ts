@@ -3,5 +3,5 @@ export interface Page {
   title: string;
   active: boolean;
   publishedAt: string;
-  updatedAt: string | Date;
+  updatedAt: string;
 }

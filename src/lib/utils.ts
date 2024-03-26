@@ -23,8 +23,8 @@ export const generateColumnsFromData = (data: DataItem[]): Column[] => {
 
   return columns;
 };
-export function extractStringField(item: DataItem): { [key: string]: string } {
-  const stringFields: { [key: string]: string } = {};
+export function extractStringField(item: DataItem): Record<string, string> {
+  const stringFields: Record<string, string> = {};
   Object.entries(item)
     .filter(([key, value]) => typeof value === "string" && !key.includes("At"))
     .forEach(([key, value]) => {

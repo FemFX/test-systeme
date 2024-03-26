@@ -166,7 +166,7 @@ export const products: Product[] = [
 
 const ProductsPage = () => {
   return (
-    <div className="px-4">
+    <div>
       <Table data={products} columns={generateColumnsFromData(products)} />
     </div>
   );

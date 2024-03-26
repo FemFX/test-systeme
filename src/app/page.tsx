@@ -1,7 +1,6 @@
 import Table from "@/components/ui/table";
 import { generateColumnsFromData } from "@/lib/utils";
 import { Page } from "@/types/pages";
-import React from "react";
 
 const pages: Page[] = [
   {
@@ -78,7 +77,7 @@ const pages: Page[] = [
 
 const HomePage = () => {
   return (
-    <div className="px-4">
+    <div>
       <Table data={pages} columns={generateColumnsFromData(pages)} />
     </div>
   );

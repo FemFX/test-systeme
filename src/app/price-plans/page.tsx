@@ -77,7 +77,7 @@ const pricePlans: PricePlan[] = [
 
 const PricePlansPage = () => {
   return (
-    <div className="px-4">
+    <div>
       <Table data={pricePlans} columns={generateColumnsFromData(pricePlans)} />
     </div>
   );

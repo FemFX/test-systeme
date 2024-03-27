@@ -1,14 +1,12 @@
 "use client";
-
 import React, { FC, useState } from "react";
-import { useDebounce } from "use-debounce";
-import { renderTableCell } from "@/components/ui/render-table-ceil";
-import { DataItem, TableProps } from "@/types/table";
-import Filter from "../filter";
+import { TableProps, TableColumn, DataItem } from "@/types/table";
 import { Button } from "../ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { extractStringField, filterData } from "@/lib/utils";
-import TableHeader from "./table-header";
+import { formattedDate } from "@/lib/utils";
+import { useDebounce } from "use-debounce";
+import Filter from "../filter";
 
 const Table: FC<TableProps> = ({ data, columns }) => {
   const { onOpen } = useModal();
@@ -35,20 +33,67 @@ const Table: FC<TableProps> = ({ data, columns }) => {
     });
   };
 
+  const renderCellContent = (item: DataItem, key: string) => {
+    const keys = key.split(".");
+    let value: any = item;
+    for (const k of keys) {
+      if (value && typeof value === "object" && k in value) {
+        value = value[k];
+      } else {
+        return "";
+      }
+    }
+    return value;
+  };
+  // const renderCellContent = (item: DataItem, column: TableColumn) => {
+  //   // Проверяем, есть ли у столбца подзаголовки
+  //   if (column.subcolumns) {
+  //     // Рендерим подзаголовки
+  //     return (
+  //       <>
+  //         {column.subcolumns.map((subcolumn, index) => (
+  //           <div key={index}>
+  //             <strong>{subcolumn.header}</strong>: {item[subcolumn.key]}
+  //           </div>
+  //         ))}
+  //       </>
+  //     );
+  //   } else {
+  //     // В противном случае отображаем значение из данных
+  //     return item[column.key];
+  //   }
+  // };
+
   return (
     <>
       <Filter setFilter={setFilter} setSearchTerms={setSearchTerm} />
       <table className="border w-full rounded mt-3">
-        <TableHeader columns={columns} />
+        <thead className="border">
+          <tr className="border">
+            {columns.map((column, columnIndex) => (
+              <th
+                className="border"
+                key={columnIndex}
+                style={{ width: `${column.widthPercent}%` }}
+              >
+                {column.header}
+              </th>
+            ))}
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody>
           {filteredData.map((item, rowIndex) => (
             <tr key={rowIndex}>
               {columns.map((column, colIndex) => (
-                <React.Fragment key={colIndex}>
-                  {renderTableCell(item, column)}
-                </React.Fragment>
+                <td className="border" key={colIndex}>
+                  {column.onRender
+                    ? column.onRender(item)
+                    : renderCellContent(item, column.key)}
+                  {/* : renderCellContent(item, column)} */}
+                </td>
               ))}
-              <th>
+              <td>
                 <Button
                   onClick={() =>
                     onOpen("edit", {
@@ -61,7 +106,7 @@ const Table: FC<TableProps> = ({ data, columns }) => {
                 >
                   Edit
                 </Button>
-              </th>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -69,4 +114,5 @@ const Table: FC<TableProps> = ({ data, columns }) => {
     </>
   );
 };
+
 export default Table;

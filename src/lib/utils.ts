@@ -23,6 +23,7 @@ export const generateColumnsFromData = (data: DataItem[]): Column[] => {
 
   return columns;
 };
+
 export function extractStringField(item: DataItem): Record<string, string> {
   const stringFields: Record<string, string> = {};
   Object.entries(item)
@@ -32,6 +33,7 @@ export function extractStringField(item: DataItem): Record<string, string> {
     });
   return stringFields;
 }
+
 export function filterData(
   items: DataItem[],
   searchTerm: string,
@@ -50,6 +52,7 @@ export function filterData(
     return matchesSearchTerm && item.active === filter;
   });
 }
+
 export function formattedDate(date: string): string {
   return new Date(date).toLocaleDateString("en-US", {
     year: "numeric",

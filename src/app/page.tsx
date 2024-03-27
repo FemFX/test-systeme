@@ -1,6 +1,9 @@
+"use client";
 import Table from "@/components/table/table";
-import { formattedDate, generateColumnsFromData } from "@/lib/utils";
+import { ACTIVE, INACTIVE } from "@/constants/filter";
+import { formattedDate } from "@/lib/utils";
 import { Page } from "@/types/pages";
+import { TableColumn } from "@/types/table";
 
 const pages: Page[] = [
   {
@@ -76,18 +79,36 @@ const pages: Page[] = [
 ];
 
 const HomePage = () => {
+  const columns: TableColumn[] = [
+    {
+      key: "title",
+      header: "Title",
+      widthPercent: 30,
+    },
+    {
+      key: "active",
+      header: "Active",
+      widthPercent: 10,
+      onRender: (page) => (
+        <div className="capitalize">{page.active ? ACTIVE : INACTIVE}</div>
+      ),
+    },
+    {
+      key: "updatedAt",
+      header: "Updated At",
+      widthPercent: 30,
+      onRender: (page) => <>{formattedDate(page.updatedAt)}</>,
+    },
+    {
+      key: "publishedAt",
+      header: "Published At",
+      widthPercent: 30,
+      onRender: (page) => <>{formattedDate(page.publishedAt)}</>,
+    },
+  ];
   return (
     <div>
-      <Table
-        data={pages.map((page) => {
-          return {
-            ...page,
-            publishedAt: formattedDate(page.publishedAt),
-            updatedAt: formattedDate(page.updatedAt),
-          };
-        })}
-        columns={generateColumnsFromData(pages)}
-      />
+      <Table data={pages} columns={columns} />
     </div>
   );
 };

@@ -1,10 +1,9 @@
 "use client";
 import React, { FC, useState } from "react";
-import { TableProps, TableColumn, DataItem } from "@/types/table";
+import { TableProps, DataItem } from "@/types/table";
 import { Button } from "../ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { extractStringField, filterData } from "@/lib/utils";
-import { formattedDate } from "@/lib/utils";
 import { useDebounce } from "use-debounce";
 import Filter from "../filter";
 
@@ -45,24 +44,6 @@ const Table: FC<TableProps> = ({ data, columns }) => {
     }
     return value;
   };
-  // const renderCellContent = (item: DataItem, column: TableColumn) => {
-  //   // Проверяем, есть ли у столбца подзаголовки
-  //   if (column.subcolumns) {
-  //     // Рендерим подзаголовки
-  //     return (
-  //       <>
-  //         {column.subcolumns.map((subcolumn, index) => (
-  //           <div key={index}>
-  //             <strong>{subcolumn.header}</strong>: {item[subcolumn.key]}
-  //           </div>
-  //         ))}
-  //       </>
-  //     );
-  //   } else {
-  //     // В противном случае отображаем значение из данных
-  //     return item[column.key];
-  //   }
-  // };
 
   return (
     <>
@@ -70,15 +51,18 @@ const Table: FC<TableProps> = ({ data, columns }) => {
       <table className="border w-full rounded mt-3">
         <thead className="border">
           <tr className="border">
-            {columns.map((column, columnIndex) => (
-              <th
-                className="border"
-                key={columnIndex}
-                style={{ width: `${column.widthPercent}%` }}
-              >
-                {column.header}
-              </th>
-            ))}
+            {columns.map((column, columnIndex) => {
+              return (
+                <th
+                  className="border"
+                  key={columnIndex}
+                  style={{ width: `${column.widthPercent}%` }}
+                >
+                  {column.header}
+                </th>
+              );
+            })}
+
             <th>Actions</th>
           </tr>
         </thead>
@@ -90,7 +74,6 @@ const Table: FC<TableProps> = ({ data, columns }) => {
                   {column.onRender
                     ? column.onRender(item)
                     : renderCellContent(item, column.key)}
-                  {/* : renderCellContent(item, column)} */}
                 </td>
               ))}
               <td>

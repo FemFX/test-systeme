@@ -6,7 +6,6 @@ export interface TableColumn {
   key: string;
   header: string;
   widthPercent: number;
-  // subcolumns?: TableColumn[];
   onRender?: (item: any) => JSX.Element;
 }
 export type DataItem = Product | PricePlan | Page;

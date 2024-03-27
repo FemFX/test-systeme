@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
 import Table from "@/components/table/table";
-import { formattedDate, generateColumnsFromData } from "@/lib/utils";
+import { formattedDate } from "@/lib/utils";
 import { Product } from "@/types/products";
 import { TableColumn } from "@/types/table";
+import { ACTIVE, INACTIVE } from "@/constants/filter";
 
 const products: Product[] = [
   {
@@ -116,26 +117,27 @@ const ProductsPage = () => {
       widthPercent: 30,
     },
     {
-      header: "Options",
-      subcolumns: [
-        {
-          key: "options.size",
-          header: "Size",
-          widthPercent: 50, // Укажите ширину подзаголовка Size
-        },
-        {
-          key: "options.amount",
-          header: "Amount",
-          widthPercent: 50, // Укажите ширину подзаголовка Amount
-        },
-      ],
-      key: "Options",
+      key: "active",
+      header: "Active",
+      widthPercent: 10,
+      onRender: (page) => (
+        <div className="capitalize">{page.active ? ACTIVE : INACTIVE}</div>
+      ),
+    },
+    {
+      key: "options.size",
+      header: "Size",
+      widthPercent: 20,
+    },
+    {
+      key: "options.amount",
+      header: "Amount",
       widthPercent: 20,
     },
     {
       key: "createdAt",
       header: "Created At",
-      widthPercent: 30,
+      widthPercent: 20,
       onRender: (product) => <>{formattedDate(product.createdAt)}</>,
     },
   ];

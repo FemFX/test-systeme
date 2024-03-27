@@ -1,6 +1,9 @@
+"use client";
 import Table from "@/components/table/table";
-import { formattedDate, generateColumnsFromData } from "@/lib/utils";
+import { ACTIVE, INACTIVE } from "@/constants/filter";
+import { formattedDate } from "@/lib/utils";
 import { PricePlan } from "@/types/price-plans";
+import { TableColumn } from "@/types/table";
 
 const pricePlans: PricePlan[] = [
   {
@@ -76,18 +79,36 @@ const pricePlans: PricePlan[] = [
 ];
 
 const PricePlansPage = () => {
+  const columns: TableColumn[] = [
+    {
+      key: "description",
+      header: "Description",
+      widthPercent: 40,
+    },
+    {
+      key: "active",
+      header: "Active",
+      widthPercent: 10,
+      onRender: (plan) => (
+        <div className="capitalize">{plan.active ? ACTIVE : INACTIVE}</div>
+      ),
+    },
+    {
+      key: "createdAt",
+      header: "Created At",
+      widthPercent: 25,
+      onRender: (plan) => <>{formattedDate(plan.createdAt)}</>,
+    },
+    {
+      key: "removedAt",
+      header: "Removed At",
+      widthPercent: 25,
+      onRender: (plan) => <>{formattedDate(plan.removedAt)}</>,
+    },
+  ];
   return (
     <div>
-      <Table
-        data={pricePlans.map((pricePlan) => {
-          return {
-            ...pricePlan,
-            createdAt: formattedDate(pricePlan.createdAt),
-            removedAt: formattedDate(pricePlan.removedAt),
-          };
-        })}
-        columns={generateColumnsFromData(pricePlans)}
-      />
+      <Table data={pricePlans} columns={columns} />
     </div>
   );
 };

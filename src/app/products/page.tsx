@@ -1,5 +1,5 @@
-import Table from "@/components/ui/table";
-import { generateColumnsFromData } from "@/lib/utils";
+import Table from "@/components/table/table";
+import { formattedDate, generateColumnsFromData } from "@/lib/utils";
 import { Product } from "@/types/products";
 
 export const products: Product[] = [
@@ -167,7 +167,15 @@ export const products: Product[] = [
 const ProductsPage = () => {
   return (
     <div>
-      <Table data={products} columns={generateColumnsFromData(products)} />
+      <Table
+        data={products.map((product) => {
+          return {
+            ...product,
+            createdAt: formattedDate(product.createdAt),
+          };
+        })}
+        columns={generateColumnsFromData(products)}
+      />
     </div>
   );
 };

@@ -1,38 +1,33 @@
 "use client";
 
 import React, { FC, useState } from "react";
+import { useDebounce } from "use-debounce";
 import { renderTableCell } from "@/components/ui/render-table-ceil";
 import { DataItem, TableProps } from "@/types/table";
 import Filter from "../filter";
-import { Button } from "./button";
+import { Button } from "../ui/button";
 import { useModal } from "@/hooks/use-modal-store";
-import { extractStringField } from "@/lib/utils";
+import { extractStringField, filterData } from "@/lib/utils";
+import TableHeader from "./table-header";
 
 const Table: FC<TableProps> = ({ data, columns }) => {
   const { onOpen } = useModal();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filter, setFilter] = useState<boolean | null>(null);
   const [items, setItems] = useState<DataItem[]>(data);
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
-  const filteredData = items.filter((item) => {
-    const matchesSearchTerm = Object.values(item).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const filteredData = filterData(items, debouncedSearchTerm, filter);
 
-    if (filter == null) {
-      return matchesSearchTerm;
-    }
-    return matchesSearchTerm && item.active === filter;
-  });
-
-  const handleUpdate = <K extends keyof DataItem>(args: {
+  const handleUpdate = <K extends keyof DataItem>({
+    id,
+    key,
+    value,
+  }: {
     id: number;
     key: K;
     value: string;
   }) => {
-    const { id, key, value } = args;
     setItems((prevItems) => {
       return prevItems.map((item) =>
         item.id === id ? { ...item, [key]: value } : item
@@ -44,39 +39,7 @@ const Table: FC<TableProps> = ({ data, columns }) => {
     <>
       <Filter setFilter={setFilter} setSearchTerms={setSearchTerm} />
       <table className="border w-full rounded mt-3">
-        <thead className="border">
-          <tr className="border">
-            {columns.map((column, columnIndex) => (
-              <th
-                className="border"
-                key={columnIndex}
-                colSpan={column.subcolumns ? column.subcolumns.length : 1}
-              >
-                {column.title}
-              </th>
-            ))}
-            <th>Actions</th>
-          </tr>
-
-          <tr>
-            {columns.map((column, columnIndex) => (
-              <React.Fragment key={columnIndex}>
-                {column.subcolumns ? (
-                  column.subcolumns.map((subcolumn, subcolumnIndex) => (
-                    <th
-                      className="border"
-                      key={`${columnIndex}-${subcolumnIndex}`}
-                    >
-                      {subcolumn}
-                    </th>
-                  ))
-                ) : (
-                  <th key={`${columnIndex}-empty`}></th>
-                )}
-              </React.Fragment>
-            ))}
-          </tr>
-        </thead>
+        <TableHeader columns={columns} />
         <tbody>
           {filteredData.map((item, rowIndex) => (
             <tr key={rowIndex}>

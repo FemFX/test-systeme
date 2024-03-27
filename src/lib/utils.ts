@@ -32,3 +32,28 @@ export function extractStringField(item: DataItem): Record<string, string> {
     });
   return stringFields;
 }
+export function filterData(
+  items: DataItem[],
+  searchTerm: string,
+  filter: boolean | null
+): DataItem[] {
+  return items.filter((item) => {
+    const matchesSearchTerm = Object.values(item).some(
+      (value) =>
+        typeof value === "string" &&
+        value.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (filter == null) {
+      return matchesSearchTerm;
+    }
+    return matchesSearchTerm && item.active === filter;
+  });
+}
+export function formattedDate(date: string): string {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}

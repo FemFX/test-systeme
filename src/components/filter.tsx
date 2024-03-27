@@ -1,5 +1,6 @@
 "use client";
 
+import { FC } from "react";
 import { Filter as FilterIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -10,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FC } from "react";
+import { ACTIVE, ALL, INACTIVE } from "@/constants/filter";
 
 interface FilterProps {
   setSearchTerms: React.Dispatch<React.SetStateAction<string>>;
@@ -26,16 +27,16 @@ const Filter: FC<FilterProps> = ({ setSearchTerms, setFilter }) => {
       />
       <Select
         onValueChange={(e) =>
-          setFilter(e === "active" ? true : e === "inactive" ? false : null)
+          setFilter(e === ACTIVE ? true : e === INACTIVE ? false : null)
         }
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent className="bg-white">
-          <SelectItem value="all">All</SelectItem>
-          <SelectItem value="active">Active</SelectItem>
-          <SelectItem value="inactive">Inactive</SelectItem>
+          <SelectItem value={ALL}>All</SelectItem>
+          <SelectItem value={ACTIVE}>Active</SelectItem>
+          <SelectItem value={INACTIVE}>Inactive</SelectItem>
         </SelectContent>
       </Select>
       <Button className="px-3">

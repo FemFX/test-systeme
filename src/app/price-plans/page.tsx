@@ -1,5 +1,5 @@
-import Table from "@/components/ui/table";
-import { generateColumnsFromData } from "@/lib/utils";
+import Table from "@/components/table/table";
+import { formattedDate, generateColumnsFromData } from "@/lib/utils";
 import { PricePlan } from "@/types/price-plans";
 
 const pricePlans: PricePlan[] = [
@@ -78,7 +78,16 @@ const pricePlans: PricePlan[] = [
 const PricePlansPage = () => {
   return (
     <div>
-      <Table data={pricePlans} columns={generateColumnsFromData(pricePlans)} />
+      <Table
+        data={pricePlans.map((pricePlan) => {
+          return {
+            ...pricePlan,
+            createdAt: formattedDate(pricePlan.createdAt),
+            removedAt: formattedDate(pricePlan.removedAt),
+          };
+        })}
+        columns={generateColumnsFromData(pricePlans)}
+      />
     </div>
   );
 };

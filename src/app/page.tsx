@@ -1,5 +1,5 @@
-import Table from "@/components/ui/table";
-import { generateColumnsFromData } from "@/lib/utils";
+import Table from "@/components/table/table";
+import { formattedDate, generateColumnsFromData } from "@/lib/utils";
 import { Page } from "@/types/pages";
 
 const pages: Page[] = [
@@ -78,7 +78,16 @@ const pages: Page[] = [
 const HomePage = () => {
   return (
     <div>
-      <Table data={pages} columns={generateColumnsFromData(pages)} />
+      <Table
+        data={pages.map((page) => {
+          return {
+            ...page,
+            publishedAt: formattedDate(page.publishedAt),
+            updatedAt: formattedDate(page.updatedAt),
+          };
+        })}
+        columns={generateColumnsFromData(pages)}
+      />
     </div>
   );
 };

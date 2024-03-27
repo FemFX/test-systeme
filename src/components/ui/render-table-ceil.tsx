@@ -1,6 +1,8 @@
+import { ACTIVE, INACTIVE } from "@/constants/filter";
+
 export const renderTableCell = (item: any, column: any) => {
   if (column.title === "active") {
-    return <td>{item.active ? "Active" : "Inactive"}</td>;
+    return <td>{item.active ? ACTIVE : INACTIVE}</td>;
   } else if (column.subcolumns) {
     return column.subcolumns.map(
       (subcolumn: string, subcolumnIndex: number) => (

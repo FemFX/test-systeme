@@ -6,6 +6,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import { extractStringField, filterData } from "@/lib/utils";
 import { useDebounce } from "use-debounce";
 import Filter from "../filter";
+import TableHeader from "./table-header";
 
 const Table: FC<TableProps> = ({ data, columns }) => {
   const { onOpen } = useModal();
@@ -49,23 +50,7 @@ const Table: FC<TableProps> = ({ data, columns }) => {
     <>
       <Filter setFilter={setFilter} setSearchTerms={setSearchTerm} />
       <table className="border w-full rounded mt-3">
-        <thead className="border">
-          <tr className="border">
-            {columns.map((column, columnIndex) => {
-              return (
-                <th
-                  className="border"
-                  key={columnIndex}
-                  style={{ width: `${column.widthPercent}%` }}
-                >
-                  {column.header}
-                </th>
-              );
-            })}
-
-            <th>Actions</th>
-          </tr>
-        </thead>
+        <TableHeader columns={columns} />
         <tbody>
           {filteredData.map((item, rowIndex) => (
             <tr key={rowIndex}>
